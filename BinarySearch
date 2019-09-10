@@ -1,0 +1,70 @@
+#include <iostream>
+using namespace std;
+void sort(int arr[], int size) {
+	for (int i = 0;i < size - 1; i++) {
+		for (int j = i + 1;j < size;j++) {
+			if (arr[i] > arr[j]) {
+				int temp = arr[i];
+				arr[i] = arr[j];
+				arr[j] = temp;
+			}
+		}
+	}
+}
+int binarySearch(int arr[], int left, int right, int x,int &dem) {//tim kiem nhi phan
+	dem ++;
+	int mid = (left + right) / 2;
+	if (left <= right) {
+		if (arr[mid] == x)
+			return mid;
+		if (arr[mid] < x) {
+			left = mid + 1;
+			return binarySearch(arr, left, right, x, dem);
+		}
+		if (arr[mid] > x) {
+			right = mid - 1;
+			return binarySearch(arr, left, right, x, dem);
+		}
+	}
+	return -1;
+}
+int search(int arr[], int size, int x, int &dem){//tim kiem thong thuong
+	for(int i=0;i<size;i++){
+		dem ++;
+		if (arr[i] == x)
+			return i;
+	}
+	return -1;
+}
+int main() {
+	int size;
+	cout << "Nhap size: ";
+	cin >> size;
+	int arr[size];
+	for (int i = 0;i < size;i++) {
+		cout << "\tarr[" << i << "]= ";
+		cin >> arr[i];
+	}
+	sort(arr, size);
+	cout<<"mang sau khi sap xep: ";
+	for(int i =0;i<size;i++){
+		cout<<arr[i]<<" ";
+	}
+	int x;
+	cout << "\nnhap so can tim: ";cin >> x;
+	int dem = 0;
+	int index2 = search(arr,size,x,dem);
+	cout<<"Cach 1: tim kiem thong thuong: \n";
+	if (index2 != -1) {
+		cout << "\t\tvi tri: " << index2+1<<"\t\t dem = "<<dem;
+	}
+	else cout << "\t\tkhong co trong mang";
+	dem =0;
+	cout<<"\nCach 2: tim kiem nhi phan: \n";
+	int index = binarySearch(arr, 1, size - 1, x,dem);
+	if (index != -1) {
+		cout << "\t\tvi tri: " << index+1<<"\t\t dem = "<<dem;
+	}
+	else cout << "\t\tkhong co trong mang";
+	return 0;
+}
