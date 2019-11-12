@@ -1,0 +1,125 @@
+#include <iostream> // sử dụng cin,cout,..
+#include <stdio.h>   // sử dụng gets, fflush(stdin)
+#include <iomanip> //  sử dụng setprecision , fixed
+#include <string.h> // sử dụng strcpy, strcmp
+using namespace std;
+
+struct CanBo{      //tạo 1 cấu trúc kiểu CanBo gồm có maCB,hoTen,gt,chucVu,ngày sinh...
+	int maCb;
+	char hoTen[30];
+	char gt[4];
+	char chucVu[10];
+	int ngaySinh;
+	int ThangSinh;
+	int namSinh;
+	double rankSalary;
+};
+CanBo inputCanBo(){ // hàm nhập 1 CanBo
+	CanBo x;
+	cout<<"nhap ma can bo: ";
+	cin>>x.maCb;
+	cout<<"nhap ho ten: ";
+	fflush(stdin);
+	gets(x.hoTen);
+	cout<<"nhap gioi tinh: ";
+	fflush(stdin);
+	gets(x.gt);
+	cout<<"nhap chuc vu: ";
+	fflush(stdin);
+	gets(x.chucVu);
+	cout<<"nhap ngay,thang,nam sinh: \n";
+	cout<<"\tNgay sinh: ";cin>>x.ngaySinh;
+	cout<<"\tThang sinh: ";cin>>x.ThangSinh;
+	cout<<"\tNam sinh: ";cin>>x.namSinh;
+	cout<<"nhap bac luong: ";
+	cin>>x.rankSalary;
+	return x; //trả về x kiểu CanBo có các thuộc tính vừa nhập : macb, hoten, gt,...
+}
+void outPutCanBo(CanBo x){ // Hàm hiển thị 1 CanBo
+	cout<<"ma can bo: "<<x.maCb;
+	cout<<"\t|| ho ten:"<<x.hoTen<<"\t || gioi tinh: "<<x.gt<<endl;
+	cout<<"chuc vu: "<<x.chucVu<<"\t|| ngay sinh: "<<x.ngaySinh<<"/"<<x.ThangSinh<<"/"<<x.namSinh<<"\t||bac luong: "<<x.rankSalary;
+}
+void nhap(int &n,CanBo *&listCb){ // Hàm nhập vào n và danh sách n CanBo
+	cout<<"nhap so can bo: ";
+	do{ // hàm điều kiện bắt 3<=n<=50
+		cin>>n;
+		if (n<3||n>50)
+			cout<<"nhap lai 3<=n<=50: ";
+	}while(n<3||n>50);
+
+	listCb = new CanBo[n]; /// khởi tạo danh sách có n cán bộ
+	cout<<"nhap danh sach "<<n<<" can bo:\n";
+	for(int i=0;i<n;i++){ // nhập từng cán bộ một bằng vòng for 
+		cout<<"\tcan bo thu "<<i+1<<": \n";
+		listCb[i] = inputCanBo();
+	}
+}
+void hienThiDs(CanBo *listCb,int n){ // Hàm hiển thị danh sách CanBo
+	
+	for(int i=0;i<n;i++){
+		cout<<i+1<<".";
+		outPutCanBo(listCb[i]);
+		cout<<endl;
+	}
+}
+void sapXep(CanBo *listCb,int n){ //giống hàm sắp xếp mảng 1 chiều bình thường
+	for(int i=0;i<n-1;i++){
+		for(int j=i+1;j<n;j++){
+			if (listCb[i].namSinh<listCb[j].namSinh){
+				CanBo temp = listCb[i];
+				listCb[i] = listCb[j];
+				listCb[j] = temp;
+			}
+		}
+	}
+}
+//CanBo khoiTao(int macb,char *hoten,const char* gtinh,const char* chuvu,int ngaysinh,int ts,int ns,double rank){
+//	CanBo x;
+//	x.maCb = macb;
+//	strcpy(x.hoTen,hoten);
+//	strcpy(x.gt,gtinh);
+//	strcpy(x.chucVu,chuvu);
+//	x.ngaySinh=ngaysinh;
+//	x.ThangSinh=ts;
+//	x.namSinh=ns;
+//	x.rankSalary=rank;
+//	return x;
+//}
+bool check(CanBo *listCb,int n){ 
+	cout<<"nhap vao ten can kiem tra: ";
+	char name[30];
+	fflush(stdin);
+	gets(name);
+	for(int i=0;i<n;i++){
+		if (strcmp(name,listCb[i].hoTen)==0){ //dùng hàm strcmp để so sánh với từng tên 1 trong danh sách
+			return true;
+		}
+	}
+	return false;
+}
+double sumSalary(CanBo *listCb,int n){ 
+	double sum = 0;
+	for(int i=0;i<n;i++){ //duyệt từng cán bộ 1 trong danh sách và lấy ra bậc lương để tính tổng lương
+		sum+=listCb[i].rankSalary*1150000;
+	}
+	return sum;
+}
+int main(){
+	CanBo *listCb; //Khởi tạo con trỏ kiểu CanBo
+	int n;
+	nhap(n,listCb); 
+//	int n = 4;
+//	listCb = new CanBo[n];
+//	listCb[0] = khoiTao(111,"Vu Van Doan","Nam","Giam Doc",20,12,2000,2);
+//	listCb[1] = khoiTao(222,"Tran Van B","Nam","Nhan Vien",20,11,1999,1);
+//	listCb[2] = khoiTao(333,"Nguyen Thi C","Nu","Thu ki",11,6,1998,1.7);
+//	listCb[3] = khoiTao(444,"Duong Thi D","Nu","Nhan Vien",1,5,2000,1);
+	cout<<"====================Danh sach can bo====================\n";
+	hienThiDs(listCb,n);
+	sapXep(listCb,n);
+	cout<<"\n==================Danh sach sau khi sap xep==================\n";
+	hienThiDs(listCb,n);
+	cout<<"\nTong luong cua can bo: "<<setprecision(2)<<fixed<<sumSalary(listCb,n);
+	return 0;
+}
