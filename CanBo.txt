@@ -120,6 +120,10 @@ int main(){
 	sapXep(listCb,n);
 	cout<<"\n==================Danh sach sau khi sap xep==================\n";
 	hienThiDs(listCb,n);
+	if(check(listCb,n)){
+		cout<<"Can bo nay co trong danh sach";
+	}
+	else cout<<"Can bo nay khong co trong danh sach;
 	cout<<"\nTong luong cua can bo: "<<setprecision(2)<<fixed<<sumSalary(listCb,n);
 	return 0;
 }
