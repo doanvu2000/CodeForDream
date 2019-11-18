@@ -1,0 +1,149 @@
+#include <iostream>
+#include <stdio.h>
+#include <string.h>
+#include <malloc.h>
+using namespace std;
+ //Khai báo cấu trúc kiểu Student gồm các thuộc tính sbd(code), họ tên(name),
+//ngày sinh(birth),gtinh(gender),hộ khẩu(house),điểm (mark)
+struct Student{
+	char code[12];
+	char name[30];
+	char birth[11];
+	char gender[4];
+	char house[20];
+	double mark;
+};
+Student inputStudent(){ // Hàm trả về 1 student (để nhập 1 student ở hàm "enterList")
+	Student x;
+	cout<<"\t\tnhap so bao danh: ";
+	fflush(stdin);
+	gets(x.code);
+	cout<<"\t\tnhap ho va ten: ";
+	fflush(stdin);
+	gets(x.name);
+	cout<<"\t\tnhap ngay sinh: ";
+	fflush(stdin);
+	gets(x.birth);
+	cout<<"\t\tnhap gioi tinh: ";
+	fflush(stdin);
+	gets(x.gender);
+	cout<<"\t\tnhap ho khau: ";
+	fflush(stdin);
+	gets(x.house);
+	cout<<"\t\tnhap tong diem: ";
+	cin>>x.mark;
+	return x;
+}
+void enterList(Student *&studentList,int n){ //Hàm nhập danh sách thí sinh
+	studentList = (Student*)malloc(n*sizeof(Student));
+	for(int i=0;i<n;i++){
+		cout<<">>>>>>>>>>Nhap thong tin thi sinh thu "<<i+1<<"<<<<<<<<<<\n";
+		studentList[i] = inputStudent(); // nhập từng thí sinh một
+	}
+}
+void show(Student x){ // hiển thị 1 thí sinh
+	cout<<"SBD: "<<x.code<<" | name: "<<x.name;
+	cout<<" | birth: "<<x.birth<<" | gioi tinh: "<<x.gender;
+	cout<<" | ho.khau: "<<x.house<<" | diem: "<<x.mark<<endl;
+}
+void showList(Student *studentList, int n){ //hiển thị danh sách
+	cout<<"\n\t----------------------------------------------------------------------------------------------------------------\n";
+	for(int i=0;i<n;i++){
+		cout<<i+1<<".";
+		show(studentList[i]);
+	}
+	cout<<"\t----------------------------------------------------------------------------------------------------------------";
+	cout<<endl<<endl;
+}
+//hàm xử lý thí sinh Nữ có điểm >25
+void nu25(Student *studentList,int n, int &dem){ 
+	dem=0;
+	int stt=1;
+	for(int i=0;i<n;i++){
+		if(strcmp(studentList[i].gender,"Nu")==0 && studentList[i].mark > 25){
+			cout<<stt<<".";
+			show(studentList[i]);
+			dem++;stt++;
+		}
+	}
+}
+//hàm nhập điểm chuẩn, kiểm tra đỗ
+void tuyenSinh(Student *studentList, int n,bool &check){
+	check = false;
+	int stt=1;
+	double diemchuan;
+	do{
+		cout<<"\n\tNhap diem chuan: ";
+		cin>>diemchuan;	
+		if (diemchuan<13.5 ||diemchuan>25) cout<<"\tnhap lai 13.5<=diemchuan<=25\n";
+	}while(diemchuan<13.5 ||diemchuan>25);
+	for(int i=0;i<n;i++){
+		if (strcmp(studentList[i].house,"Gia Lam - Ha Noi")==0 && studentList[i].mark >=diemchuan){ 
+		//Lệnh if kiểm tra xem hộ khẩu có ở "Gia Lam - Ha Noi" không, điểm có >= diemchuan không ?
+			cout<<stt<<".";stt++;
+			show(studentList[i]);
+			check = true;
+		}
+	}
+	
+}
+void xoa(Student* &studentList,int &n){ //hàm xóa 1 thí sinh có mã "DCNA100125"
+	int i=0;
+	while(i<n){
+		if (strcmp(studentList[i].code,"DCNA100125")==0) break;
+		i++;
+	}
+	if(i==n){
+		cout<<"Khong co thi sinh co SBD: DCNA100125 trong danh sach"<<endl;
+		return;
+	}
+	for(int j = i;j<n;j++){
+		studentList[j] = studentList[j+1];
+	}
+	n--;
+	studentList = (Student*)realloc(studentList,n*sizeof(Student)); //cấp phát động lại bộ nhớ
+}
+//Student khoiTao(char* sbd,const char* ten,char* ngsinh, char* gtinh,char* que,double diem){ // cái này là để test dữ liệu cho nhanh
+//	Student x;
+//	strcpy(x.code,sbd);
+//	strcpy(x.name,ten);
+//	strcpy(x.birth,ngsinh);
+//	strcpy(x.gender,gtinh);
+//	strcpy(x.house,que);
+//	x.mark = diem;	
+//	return x;
+//}
+int main(){
+	int n;
+	do{
+		cout<<"\tnhap so thi sinh: ";
+		cin>>n;
+		if (n<3||n>35) cout<<"nhap lai 3<=n<=35";
+	}while(n<3||n>35);
+	Student* studentList;
+	enterList(studentList,n);
+//	n=4;    //cái này là để test dữ liệu cho nhanh đỡ phải nhập nhiều lần
+//	Student *studentList = (Student*)malloc(n*sizeof(Student));
+//	studentList[0] = khoiTao("DCNA100121","Duong Van Minh","20/12/2000","Nam","Truc Ninh - Nam Dinh",20);
+//	studentList[1] = khoiTao("DCNA100122","Tran Duc Huynh","05/08/2000","Nu","Gia Lam - Ha Noi",23);
+//	studentList[2] = khoiTao("DCNA100125","Vu Van Doan","24/11/2000","Nam","Truc Ninh - Nam Dinh",28.5);
+//	studentList[3] = khoiTao("DCNA100124","Em Anh Doan","21/12/2000","Nu","Gia Lam - Ha Noi",22);
+	cout<<"\t\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>DANH SACH THI SINH<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<endl;
+	showList(studentList,n); //hthi danh sach
+	int dem;
+	cout<<"\t>>>>>Danh sach thi sinh nu co tong diem lon hon 25<<<<<\n";
+	nu25(studentList,n,dem); //hàm xử lý thí sinh Nữ có điểm >25
+	if(dem==0){
+		cout<<"\t\tKhong co thi sinh nao!"<<endl;
+	}
+	bool check;
+	cout<<"\n\t>>>>>Danh sach thi sinh o Gia Lam - Ha Noi trung tuyen<<<<<\n";
+	tuyenSinh(studentList,n,check); //nhập diemchuan va kiểm tra
+	if(!check){
+		cout<<"\tKhong co thi sinh nao!"<<endl;
+	}
+	xoa(studentList,n); // xóa thí sinh có mã "DCNA100125"
+	cout<<"\n\t\t>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>DANH SACH THI SINH SAU KHI XOA<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<endl;
+	showList(studentList,n);
+	return 0;
+}
